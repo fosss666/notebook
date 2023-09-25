@@ -28,8 +28,11 @@
  git reset --hard commit_id // HEAD 就会指向这个commit_id的提交记录
 ```
 这种操作存在一个问题，服务器上的代码虽然被还原了，但假如有多个人在这个分支上开发，他们本地的版本依然是比服务器上的版本高的，所以，别人再重新提交(push)代码的话，你撤销的操作又会被重新，你上面的操作也就白操作了。解决办法是，让别人把本地的分支先删掉，然后重新从服务器上拉取分支,或者你在对方提交完所有本地代码之后对方没有再进行修改代码，这个时候你提交了，发现你提交的有问题，再进行reset操作，然后让对方拉取（pull）最新的代码也ok，最主要的就是对方本地没有你要reset的代码即可
-2 误删恢复
-如果回滚代码之后发现复制错了 commit_id，或者误删了某次 commit 记录，也可以通过下方代码恢复：
+
+* 误删恢复
+
+  如果回滚代码之后发现复制错了 commit_id，或者误删了某次 commit 记录，也可以通过下方代码恢复：
+
 ```vim
 git relog // 复制要恢复操作的前面的 hash 值
 git reset --hard hash // 将 hash 换成要恢复的历史记录的 hash 值
@@ -41,22 +44,56 @@ git reset --hard hash // 将 hash 换成要恢复的历史记录的 hash 值
 * 切换分支：git checkout 分支名
 * 合并分支：git merge 分支名
   + 冲突产生的表现:后面状态为 MERGING
-`Layne@LAPTOP-Layne MINGW64 /d/Git-Space/SH0720 (master|MERGING) `
+  `Layne@LAPTOP-Layne MINGW64 /d/Git-Space/SH0720 (master|MERGING) `
 
   + 冲突产生的原因:
-合并分支时，两个分支在同一个文件的同一个位置有两套完全不同的修改。Git 无法替
-我们决定使用哪一个。必须人为决定新代码内容。
-查看状态(检测到有文件有两处修改)
+  合并分支时，两个分支在同一个文件的同一个位置有两套完全不同的修改。Git 无法替
+  我们决定使用哪一个。必须人为决定新代码内容。
+  查看状态(检测到有文件有两处修改)
   + 解决冲突
   编辑有冲突的文件，删除特殊符号，决定要使用的内容
-`特殊符号:<<<<<<< HEAD 当前分支的代码 ======= 合并过来的代码 >>>>>>> hot-fix `
+  `特殊符号:<<<<<<< HEAD 当前分支的代码 ======= 合并过来的代码 >>>>>>> hot-fix `
 ## 远程仓库操作
 * 查看当前所有远程地址别名：git remote -v
+
 * 起别名：git remote add 别名 仓库地址
+
+   修改别名：git remote rename 当前名 新名
+
 * 推送到远程仓库：
    + git push 别名 分支
    + git push 远程库地址 分支名（默认master）
-* 从远程仓库拉取change：git pull 远程库地址 分支名（默认master）
-* 克隆仓库：git clone 远程仓库地址
-* 
    
+* 从远程仓库拉取change：git pull 远程库地址 分支名（默认master）
+
+* 克隆仓库：git clone 远程仓库地址
+
+## SSH免密登录
+
+1. 进入当前用户的家目录：
+
+   ```sh
+   cd
+   ```
+
+2. 删除.ssh目录
+
+   ```
+   rm -rvf .ssh
+   ```
+
+3. 令生成.ssh 秘钥目录
+
+   ```
+    ssh-keygen -t rsa -C 邮箱
+   ```
+
+4. 进入.ssh 目录并查看id_rsa.pub文件，这个文件里就是密钥。或者也可以到磁盘中找这个文件
+
+   ```
+   cd .ssh
+   cat id_rsa.pub
+   ```
+
+5. 去github或gitee保存密钥
+
