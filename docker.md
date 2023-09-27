@@ -1,22 +1,57 @@
 # docker
 
+### ubuntu安装docker
+
+___(使用root权限，如果不是，每个命令前加sudo)___
+
+1. 卸载ubuntu原装docker：`apt-get remove docker docker-engine docker.io containerd runc`
+
+2. 更新软件包和版本数据：
+
+   * `apt-get update`
+   * `apt upgrade`
+
+3. 安装docker所需的依赖文件：`apt-get install ca-certificates curl gnupg lsb-release`
+
+4. 添加docker官方GPG密钥：
+
+   `curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -`
+
+5. 添加docker软件源：
+
+   `sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"`
+
+6. 安装docker：`apt-get install docker-ce docker-ce-cli containerd.io`
+
+7. docker 启动：`systemctl start docker`
+
+8. 安装工具：
+
+   `apt-get -y install apt-transport-https ca-certificates curl software-properties-common`
+
+9. 重启：`service docker restart`
+
+10. 设置开机自启：`systemctl enable docker.service`
+
 ### docker基本命令
 
-1. 删除镜像： docker rmi 【镜像名称:镜像版本】
+1. 查看版本：`docker version`
 
-2. 删除容器：docker rm 【容器名称/容器id(可只写一部分)】
+2. 删除镜像： `docker rmi 【镜像名称:镜像版本】`
 
-3. 复制文件：docker cp 【容器id(可只写一部分):文件位置】 新位置
+3. 删除容器：`docker rm 【容器名称/容器id(可只写一部分)】`
 
-4. 设置容器开机自启：docker update --restart=always 【容器名称或id】
+4. 复制文件：`docker cp 【容器id(可只写一部分):文件位置】 新位置`
 
-   关闭开机自启：docker update --restart=no 【容器名称或id】
+5. 设置容器开机自启：`docker update --restart=always 【容器名称或id】`
 
-5. 防火墙状态：ufw status
+   关闭开机自启：`docker update --restart=no 【容器名称或id】`
 
-   关闭或开启防火墙：sudo ufw enable/disable
+6. 防火墙状态：`ufw status`
 
-6. 开放端口：ufw allow 【端口号】
+   关闭或开启防火墙：`sudo ufw enable/disable`
+
+7. 开放端口：`ufw allow 【端口号】`
 
 ### docker 安装mysql
 
