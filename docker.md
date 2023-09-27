@@ -131,7 +131,7 @@ ___(使用root权限，如果不是，每个命令前加sudo)___
 2. 运行
 
    ```
-   docker run -p 1935:1935 -p 8080:8080 -d alqutami/rtmp-hls
+   docker run -p 1935:1935 -p 8080:8080 --name=nginx_rtmp -d alqutami/rtmp-hls
    ```
 
 3. 拷贝文件
@@ -168,5 +168,38 @@ ___(使用root权限，如果不是，每个命令前加sudo)___
    -v /mydata/nginx/logs:/var/log/nginx \
    -d  nginx:latest
    ```
+
+
+### idea远程连接docker
+
+1. 配置docker远程连接端口
+
+   * 编辑docker 配置文件
+
+   ```shell
+   vim /lib/systemd/system/docker.service
+   ```
+
+   * 修改配置
+
+     ```shell
+     # 将[Service]下的ExecStart改成下面这样
+     ExecStart=/usr/bin/dockerd   -H tcp://0.0.0.0:2375 -H unix://var/run/docker.sock
+     ```
+
+2. 加载配置：`systemctl daemon-reload`
+
+3. 重启docker：`systemctl restart docker` 
+
+4. 开启防火墙或开放2375端口  [命令见上文此处](###docker基本命令)
+
+5. 测试远程访问，访问 http://[虚拟机ip]:2375/version，出现展示docker版本的一段json即说明设置成功
+
+6. idea配置docker连接
+
+   * 下载插件docker
+   * 在设置中找到docker并添加连接
+
+   ![image-20230927190648105](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309271907214.png)
 
    
