@@ -1,4 +1,4 @@
-# docker
+# docker（更新中……）
 
 [docker官网](http://www.docker.com)
 
@@ -111,7 +111,6 @@ ubuntu或centos都可用以下方式配置镜像加速器
 * 重启docker：`systemctl restart docker`
 * 查看docker状态：`systemctl status docker`
 * 是否开机自启：`systemctl enable/disable docker`
-* 复制文件：`docker cp 【容器id(可只写一部分):文件位置】 新位置`
 * 查看版本：`docker version`
 * 查看概要信息：`docker info`
 * 查看总体帮助文档：`docker --help`
@@ -119,9 +118,14 @@ ubuntu或centos都可用以下方式配置镜像加速器
 
 ### 2. 镜像命令
 
+* 展示镜像：`docker images`
 * 删除镜像： `docker rmi 【镜像名称:镜像版本】`
 
 ### 3. 容器命令
+
+* 显示已启动的容器：`docker ps`
+
+* 显示所有容器：`docker ps -a`
 
 * 删除容器：`docker rm 【容器名称/容器id(可只写一部分)】`
 
@@ -146,6 +150,8 @@ ubuntu或centos都可用以下方式配置镜像加速器
 ​	  重启容器：`docker restart 容器名/容器id(可部分)`
 
 ​	  关闭容器：`docker start 容器名/容器id(可部分)`
+
+* 复制容器文件到本地系统文件：`docker cp 【容器id(可只写一部分):文件位置】 新位置`
 
 ## 三、docker安装镜像及启动容器
 
@@ -236,7 +242,7 @@ ubuntu或centos都可用以下方式配置镜像加速器
    docker cp 容器id:/etc.nginx /mydata
    ```
 
-4. 将mydata下的nginx文件修改名称为nginx_rtmp
+4. 将mydata下的nginx文件修改名称为nginx_rtmp：直接在图形界面上编辑
 
 5. 运行
 
@@ -294,7 +300,10 @@ ubuntu或centos都可用以下方式配置镜像加速器
 
    * 下载插件docker
    * 在设置中找到docker并添加连接
-
+     - 点击加号
+     - 选择TCP socket,添加Engine API URL 
+     - url格式为tcp://【主机地址】:2375，如下图所示
+   
    ![image-20230927190648105](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309271907214.png)
-
+   
    
