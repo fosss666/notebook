@@ -1,8 +1,16 @@
 # docker
 
-### ubuntu安装docker
+[docker官网](http://www.docker.com)
+
+[docker hub官网(需要魔法)](https://hub.docker.com)                  [国内仓库](https://hub.daocloud.io/)
+
+## 一、linux安装docker
 
 ___(使用root权限，如果不是，每个命令前加sudo)___
+
+[官网安装教程](https://docs.docker.com/engine/install/)
+
+### 1. ubuntu安装docker
 
 1. 卸载ubuntu原装docker：`apt-get remove docker docker-engine docker.io containerd runc`
 
@@ -17,7 +25,7 @@ ___(使用root权限，如果不是，每个命令前加sudo)___
 
    `curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -`
 
-5. 添加docker软件源：
+5. 添加docker国内镜像源（此处选用阿里云）：
 
    `sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"`
 
@@ -33,7 +41,65 @@ ___(使用root权限，如果不是，每个命令前加sudo)___
 
 10. 设置开机自启：`systemctl enable docker.service`
 
-### docker基本命令
+### 2. centos安装docker
+
+1. 清除旧版本：
+
+   ```
+   yum remove docker \
+   docker-client \
+   docker-client-latest \
+   docker-latest-logrotate \
+   docker-logrotate \
+   docker-engine
+   ```
+
+2. 安装gcc相关：
+
+   ```
+   yum -y install gcc
+   yum -y install gcc-c++
+   ```
+
+3. 设置仓库：
+
+   ```shell
+   # 先安装yum-utils
+   yum install -y yum-utils
+   # 设置（阿里云）仓库地址
+   yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+   ```
+
+4. 更新yum软件包索引：`yum makecache fast`
+
+5. 安装docker引擎：`yum -y install docker-ce docker-ce-cli containerd.io`
+
+6. 启动：`systemctl start docker`
+
+### 3. 配置镜像加速器
+
+ubuntu或centos都可用以下方式配置镜像加速器
+
+1. 登录阿里云官网，搜索容器镜像服务
+
+   ![image-20230928103643167](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309281036686.png)
+
+2. 进入后在镜像工具-镜像加速器下复制自己的加速器地址，在linux中配置镜像加速器地址
+
+   ```shell
+   sudo mkdir -p /etc/docker
+   sudo tee /etc/docker/daemon.json <<-'EOF'
+   {
+     "registry-mirrors": ["【填写个人地址】"]
+   }
+   EOF
+   sudo systemctl daemon-reload
+   sudo systemctl restart docker
+   ```
+
+   
+
+## 二、docker基本命令
 
 1. 查看版本：`docker version`
 
@@ -53,7 +119,27 @@ ___(使用root权限，如果不是，每个命令前加sudo)___
 
 7. 开放端口：`ufw allow 【端口号】`
 
-### docker 安装mysql
+8. `docker run [-d -v -p --name --restart……] 镜像名:版本`
+
+   -v：数据挂载
+
+   -d：后台启动
+
+   -p：端口映射
+
+   --name：自定义容器名
+
+   --restart：开机是否自启
+
+9. 启动容器：`docker start 容器名/容器id(可部分)`
+
+   重启容器：`docker restart 容器名/容器id(可部分)`
+
+   关闭容器：`docker start 容器名/容器id(可部分)`
+
+## 三、docker安装镜像及启动容器
+
+### 1. docker 安装mysql
 
 1. 拉取镜像：
 
@@ -104,7 +190,7 @@ ___(使用root权限，如果不是，每个命令前加sudo)___
    docker update --restart=always mysql
    ```
 
-### docker安装emqx
+### 2. docker安装emqx
 
 1. 拉取
 
@@ -120,7 +206,7 @@ ___(使用root权限，如果不是，每个命令前加sudo)___
    docker run -p 18083:18083 -p 8883:8883 -p 8083:8083 -p 8084:8084 -p 1883:1883 --name=emqx -d emqx/emqx
    ```
 
-### docker安装nginx+rtmp
+### 3. docker安装nginx+rtmp
 
 1. 拉取(nginx和rtmp的整合包，rtmp是流媒体协议，用于直播等)
 
@@ -151,7 +237,7 @@ ___(使用root权限，如果不是，每个命令前加sudo)___
    -d alqutami/rtmp-hls
    ```
 
-### docker安装nginx
+### 4. docker安装nginx
 
 1. 拉取
 
@@ -169,16 +255,15 @@ ___(使用root权限，如果不是，每个命令前加sudo)___
    -d  nginx:latest
    ```
 
+## 四、远程连接
 
-### idea远程连接docker
+### 使用idea远程连接docker
 
 1. 配置docker远程连接端口
 
    * 编辑docker 配置文件
 
-   ```shell
-   vim /lib/systemd/system/docker.service
-   ```
+     `vim /lib/systemd/system/docker.service`
 
    * 修改配置
 
