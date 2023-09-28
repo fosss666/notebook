@@ -101,41 +101,51 @@ ubuntu或centos都可用以下方式配置镜像加速器
 
 ## 二、docker基本命令
 
-1. 查看版本：`docker version`
+### 1. 帮助启动类命令
 
-2. 删除镜像： `docker rmi 【镜像名称:镜像版本】`
+* 防火墙状态：`ufw status`
+* 关闭或开启防火墙：`sudo ufw enable/disable`
+* 开放端口：`ufw allow 【端口号】`
+* 启动docker：`systemctl start docker`
+* 停止docker：`systemctl stop docker`
+* 重启docker：`systemctl restart docker`
+* 查看docker状态：`systemctl status docker`
+* 是否开机自启：`systemctl enable/disable docker`
+* 复制文件：`docker cp 【容器id(可只写一部分):文件位置】 新位置`
+* 查看版本：`docker version`
+* 查看概要信息：`docker info`
+* 查看总体帮助文档：`docker --help`
+* 查看docker命令帮助文档：`docker 具体命令 --help`
 
-3. 删除容器：`docker rm 【容器名称/容器id(可只写一部分)】`
+### 2. 镜像命令
 
-4. 复制文件：`docker cp 【容器id(可只写一部分):文件位置】 新位置`
+* 删除镜像： `docker rmi 【镜像名称:镜像版本】`
 
-5. 设置容器开机自启：`docker update --restart=always 【容器名称或id】`
+### 3. 容器命令
 
-   关闭开机自启：`docker update --restart=no 【容器名称或id】`
+* 删除容器：`docker rm 【容器名称/容器id(可只写一部分)】`
 
-6. 防火墙状态：`ufw status`
+* 设置容器开机自启：`docker update --restart=always 【容器名称或id】`
 
-   关闭或开启防火墙：`sudo ufw enable/disable`
+​      关闭开机自启：`docker update --restart=no 【容器名称或id】`
 
-7. 开放端口：`ufw allow 【端口号】`
+* 创建容器：`docker run [-d -v -p --name --restart……] 镜像名:版本`
 
-8. `docker run [-d -v -p --name --restart……] 镜像名:版本`
+​		-v：数据挂载
 
-   -v：数据挂载
+​		-d：后台启动
 
-   -d：后台启动
+​		-p：端口映射
 
-   -p：端口映射
+​		--name：自定义容器名
 
-   --name：自定义容器名
+​		--restart：开机是否自启
 
-   --restart：开机是否自启
+* 启动容器：`docker start 容器名/容器id(可部分)`
 
-9. 启动容器：`docker start 容器名/容器id(可部分)`
+​	  重启容器：`docker restart 容器名/容器id(可部分)`
 
-   重启容器：`docker restart 容器名/容器id(可部分)`
-
-   关闭容器：`docker start 容器名/容器id(可部分)`
+​	  关闭容器：`docker start 容器名/容器id(可部分)`
 
 ## 三、docker安装镜像及启动容器
 
@@ -276,7 +286,7 @@ ubuntu或centos都可用以下方式配置镜像加速器
 
 3. 重启docker：`systemctl restart docker` 
 
-4. 开启防火墙或开放2375端口  [命令见上文此处](###docker基本命令)
+4. 开启防火墙或开放2375端口：操作☞上文 [docker基本命令](##二、docker基本命令)
 
 5. 测试远程访问，访问 http://[虚拟机ip]:2375/version，出现展示docker版本的一段json即说明设置成功
 
