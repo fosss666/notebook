@@ -119,31 +119,39 @@ ubuntu或centos都可用以下方式配置镜像加速器
 ### 2. 镜像命令
 
 * 展示镜像：`docker images`
-* 删除镜像： `docker rmi 【镜像名称:镜像版本】`
+* 查询镜像：`docker search 【镜像名】`
+* 拉取镜像：`docker pull 镜像名[:版本]  # 默认版本是latest`
+* 删除镜像： `docker rmi [-f] 镜像名称或镜像id   # -f表示强制删除`
 
 ### 3. 容器命令
+
+* 创建容器：`docker run [-d -v -p --name --restart……] 镜像名:版本`
+
+  -v：数据挂载
+
+  -d：后台启动
+
+  -p：端口映射    `6379:6379`表示左边为暴露的端口，右边为容器端口
+
+  --name：自定义容器名
+
+  --restart：开机是否自启
+
+  -it：启动交互式容器
 
 * 显示已启动的容器：`docker ps`
 
 * 显示所有容器：`docker ps -a`
 
-* 删除容器：`docker rm 【容器名称/容器id(可只写一部分)】`
+* 进入容器：`docker exec -it 【容器名或id】 /bin/bash【或bash】`   
+
+  退出容器：`exit`
+
+* 删除容器：`docker rm 【容器名称/容器id(可只写一部分)】 # 可加-f参数强制删除`  
 
 * 设置容器开机自启：`docker update --restart=always 【容器名称或id】`
 
-​      关闭开机自启：`docker update --restart=no 【容器名称或id】`
-
-* 创建容器：`docker run [-d -v -p --name --restart……] 镜像名:版本`
-
-​		-v：数据挂载
-
-​		-d：后台启动
-
-​		-p：端口映射
-
-​		--name：自定义容器名
-
-​		--restart：开机是否自启
+  关闭开机自启：`docker update --restart=no 【容器名称或id】`
 
 * 启动容器：`docker start 容器名/容器id(可部分)`
 
@@ -151,7 +159,12 @@ ubuntu或centos都可用以下方式配置镜像加速器
 
 ​	  关闭容器：`docker start 容器名/容器id(可部分)`
 
-* 复制容器文件到本地系统文件：`docker cp 【容器id(可只写一部分):文件位置】 新位置`
+* 查看日志：`docker logs 【容器名或id】`
+
+* 复制容器文件到本地系统文件，防止容器删除后数据也没了：`docker cp 【容器id(可只写一部分):文件位置】 本地位置`
+* 导入导出容器：
+  + 导出容器的内容留作为一个tar归档文件：`docker export 【容器id】 > abc.tar`
+  + 从tar包中的内容创建一个新的文件系统再导入为镜像：`cat abc.tar | docker import - 镜像用户/镜像名:镜像版本号 `
 
 ## 三、docker安装镜像及启动容器
 
@@ -165,7 +178,7 @@ ubuntu或centos都可用以下方式配置镜像加速器
 
 2. 启动容器，做好端口映射、数据挂载（放置容器删除后数据也被删除）
 
-   ```
+   ```shell
    docker run -d -p 3306:3306 --privileged=true \
    -v /mydata/mysql/log:/var/log/mysql \
    -v /mydata/mysql/data:/var/lib/mysql \
@@ -177,14 +190,14 @@ ubuntu或centos都可用以下方式配置镜像加速器
 
 3. 设置字符集为utf8
 
-   ```
+   ```shell
    cd /mydata/mysql/conf
    vim my.cnf
    ```
 
    编辑内容为：
 
-   ```
+   ```shell
    [client]
    default_character_set=utf8
    [mysqld]
@@ -194,15 +207,13 @@ ubuntu或centos都可用以下方式配置镜像加速器
 
 4. 重启mysql
 
-   ```
+   ```shell
    docker restart mysql
    ```
 
-   
-
 5. 设置开机自启
 
-   ```
+   ```shell
    docker update --restart=always mysql
    ```
 
@@ -210,35 +221,33 @@ ubuntu或centos都可用以下方式配置镜像加速器
 
 1. 拉取
 
-   ```
+   ```shell
    docker pull emqx/emqx
    ```
 
-   
-
 2. 运行容器
 
-   ```
+   ```shell
    docker run -p 18083:18083 -p 8883:8883 -p 8083:8083 -p 8084:8084 -p 1883:1883 --name=emqx -d emqx/emqx
    ```
 
-### 3. docker安装nginx+rtmp
+### 3. docker安装rtmp
 
 1. 拉取(nginx和rtmp的整合包，rtmp是流媒体协议，用于直播等)
 
-   ```
+   ```shell
    docker pull alqutami/rtmp-hls
    ```
 
 2. 运行
 
-   ```
+   ```shell
    docker run -p 1935:1935 -p 8080:8080 --name=nginx_rtmp -d alqutami/rtmp-hls
    ```
 
 3. 拷贝文件
 
-   ```
+   ```shell
    docker cp 容器id:/etc.nginx /mydata
    ```
 
@@ -246,7 +255,7 @@ ubuntu或centos都可用以下方式配置镜像加速器
 
 5. 运行
 
-   ```
+   ```shell
    docker run -p 1935:1935 -p 8080:8080 \
    -v /mydata/nginx_rtmp:/etc/nginx \
    --name nginx_rtmp \
@@ -257,13 +266,13 @@ ubuntu或centos都可用以下方式配置镜像加速器
 
 1. 拉取
 
-   ```
+   ```shell
    docker pull nginx
    ```
 
 2. 运行
 
-   ```
+   ```shell
    docker run  -p 80:80 --name nginx --restart=always \
    -v /mydata/nginx/conf/nginx.conf:/etc/nginx/nginx.conf \
    -v /mydata/nginx/html:/usr/share/nginx/html \
