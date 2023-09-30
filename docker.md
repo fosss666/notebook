@@ -104,8 +104,12 @@ ubuntu或centos都可用以下方式配置镜像加速器
 ### 1. 帮助启动类命令
 
 * 防火墙状态：`ufw status`
-* 关闭或开启防火墙：`sudo ufw enable/disable`
-* 开放端口：`ufw allow 【端口号】`
+* 关闭或开启防火墙：
+  * ubuntu: `ufw enable/disable`
+  * centos: `systemctl enable/disable firewalld`
+* 开放及关闭端口：
+  * ubuntu：`ufw [delete] allow 【端口号】`
+  * centos：`firewall-cmd --zone=public --add/remove-port=【端口号】/tcp --permanent`
 * 启动docker：`systemctl start docker`
 * 停止docker：`systemctl stop docker`
 * 重启docker：`systemctl restart docker`
@@ -153,11 +157,11 @@ ubuntu或centos都可用以下方式配置镜像加速器
 
   关闭开机自启：`docker update --restart=no 【容器名称或id】`
 
-* 启动容器：`docker start 容器名/容器id(可部分)`
+*  启动容器：`docker start 容器名/容器id(可部分)`
 
-​	  重启容器：`docker restart 容器名/容器id(可部分)`
+   重启容器：`docker restart 容器名/容器id(可部分)`
 
-​	  关闭容器：`docker start 容器名/容器id(可部分)`
+   关闭容器：`docker start 容器名/容器id(可部分)`
 
 * 查看日志：`docker logs 【容器名或id】`
 
@@ -293,7 +297,7 @@ ubuntu或centos都可用以下方式配置镜像加速器
    * 修改配置
 
      ```shell
-     # 将[Service]下的ExecStart改成下面这样
+     # 将[Service]下的ExecStart添加 -H tcp://0.0.0.0:2375,如：
      ExecStart=/usr/bin/dockerd   -H tcp://0.0.0.0:2375 -H unix://var/run/docker.sock
      ```
 
@@ -315,4 +319,74 @@ ubuntu或centos都可用以下方式配置镜像加速器
    
    ![image-20230927190648105](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309271907214.png)
    
+
+## 五、本地镜像发布
+
+### 1. commit命令
+
+1. 拉取ubuntu镜像：`docker pull ubuntu`
+
+2. 运行容器，ubuntu不能后台运行，所以直接进入：`docker run -it 【镜像id】 /bin/bash`
+
+3. 默认没有vim命令,执行`vim a.txt`会保存vim没有找到
+
+4. 下载vim：
+
+   ```shell
+   apt-get update
+   apt-get install vim
+   ```
+
+5. 此时再进行测试，发现vim安装成功
+
+6. 提交容器副本使之成为一个新的镜像：本ubuntu已经添加了vim命令，将其提交
+
+   ```
+   docker commit -m="提交的描述信息" -a="作者" 容器ID 要创建的目标镜像名:[标签名]
+   ```
+
+7. 提交之后，执行`docker images`会看到刚才提交的镜像，运行这个镜像，执行vim命令，发现该命令已存在
+
+### 2.本地镜像发布到阿里云
+
+1. 进入阿里云容器镜像服务，在实例列表中创建个人示例
+
+2. 设置Registry登录密码：
+
+   ![image-20230930133923420](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309301339493.png)
+
+3. 点击命名空间 -> 创建命名空间
+
+   ![image-20230930135203126](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309301352204.png)
+
+4. 点击镜像仓库 ->创建命名空间
+
+   * 填写仓库信息
+
+     ![image-20230930135742334](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309301359636.png)
+
+   * 选择代码源
+
+     ![image-20230930140002375](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309301400448.png)
+
+5. 参照阿里云给出的命令将本地镜像推送到阿里云：
+
+   ![image-20230930140806238](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309301408309.png)
+
+   ![image-20230930141043149](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309301410426.png)
+
+6. 在镜像版本界面就可以看到推送的本地镜像了
+
+   ![image-20230930141153163](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309301411231.png)
+
    
+
+   
+
+### 3. 从阿里云拉取镜像到本地
+
+参照第二条命令进行拉取
+
+![image-20230930141450623](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309301421460.png)
+
+![image-20230930141745319](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309301422243.png)
