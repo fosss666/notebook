@@ -385,8 +385,77 @@ ubuntu或centos都可用以下方式配置镜像加速器
 
 ### 3. 从阿里云拉取镜像到本地
 
-参照第二条命令进行拉取
+* 参照第二条命令进行拉取
 
-![image-20230930141450623](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309301421460.png)
+  ![image-20230930141450623](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309301421460.png)
 
-![image-20230930141745319](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309301422243.png)
+  
+
+  ![image-20230930141745319](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309301422243.png)
+
+### 4.本地镜像推送到私有仓库
+
+1. 下载镜像 Docker Registry：
+
+   ```sh
+   docker pull registry
+   ```
+
+2. 运行私有库Registry，相当于本地有个私有Dockerhub：
+
+   ```shell
+   docker run -d -p 5000:5000 \
+   -v /mydata/myregistry:/tmp/registry \
+   --name=registry \
+   --restart=always \
+   --privileged=true registry
+   ```
+
+3. 为拉取的简单版ubuntu添加ifconfig命令
+
+   ![image-20231001130939742](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202310011309814.png)
+
+4. commit:
+
+   ![image-20231001131301614](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202310011313809.png)
+
+5. 将新镜像修改符合私服规范的tag：
+
+   ```sh
+   docker tag 镜像名:版本 虚拟机ip:5000/镜像名:版本
+   ```
+
+6. 修改配置文件使之支持http：
+
+   ```sh
+   vim /etc/docker/daemon.json
+   # 添加如下配置：
+   {
+   	"registry-mirrors":["阿里云镜像地址"],
+   	"insecure-registries":["虚拟机ip:5000"]
+   }
+   ```
+
+   ___重启docker___
+
+7. push到私服库
+
+   ```sh
+   docker push 虚拟机ip:5000/镜像名:版本tag
+   ```
+
+8. 验证私服库上有什么镜像
+
+   ```sh
+   curl -XGET http://虚拟机ip:5000/v2/_catalog
+   # 查看镜像tag
+   curl http://虚拟机ip:5000/v2/镜像名/tags/list
+   ```
+
+9. 拉取镜像
+
+   ```
+   docker pull 虚拟机ip:5000/镜像名:版本tag
+   ```
+
+   
