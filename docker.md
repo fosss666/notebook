@@ -284,6 +284,50 @@ ubuntu或centos都可用以下方式配置镜像加速器
    -d  nginx:latest
    ```
 
+### 5. docker安装kafka
+
+1. 创建一个网络
+
+   ```sh
+   docker network create app-tier --driver bridge
+   ```
+
+2. 安装zookeeper(kafka依赖zookeeper)
+
+   ```sh
+   docker run -d --name zookeeper-server \
+   --network app-tier \
+   -e ALLOW_ANONYMOUS_LOGIN=yes \
+   bitnami/zookeeper:latest
+   ```
+
+3. 安装kafka
+
+   ```sh
+   docker run -d --name kafka-server \
+   --network app-tier \
+   -p 9092:9092 \
+   -e ALLOW_PLAINTEXT_LISTENER=yes \
+   -e KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper-server:2181 \
+   -e KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://【主机ip】:9092 \
+   bitnami/kafka:latest
+   ```
+
+4. kafka-map图形化管理工具
+
+   ```sh
+   docker run -d --name kafka-map \
+   --network app-tier \
+   -p 9001:8080 \
+   -v /mydata/kafka-map/data:/usr/local/kafka-map/data \
+   -e DEFAULT_USERNAME=admin \
+   -e DEFAULT_PASSWORD=admin \
+   --restart always dushixiang/kafka-map:latest
+   ```
+
+   * _访问地址：http://服务器IP:9001/_
+   * 默认账号密码为：admin
+
 ## 四、远程连接
 
 ### 使用idea远程连接docker
