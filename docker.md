@@ -325,6 +325,95 @@ ubuntu或centos都可用以下方式配置镜像加速器
    * _访问地址：http://服务器IP:9001/_
    * 默认账号密码为：admin
 
+### 6. docker安装Elasticsearch、Kibana、IK分词器
+
+#### 1. 安装Elasticsearch
+
+1. 创建网络：因为需要部署kibana容器，因此需要让es和kibana容器互联
+
+   ```sh
+   docker network create es-net
+   ```
+
+2. 拉取镜像 _jdk8不能使用6以上的版本_
+
+   ```sh
+   docker pull elasticsearch:7.12.1
+   ```
+
+3. 创建挂载点目录
+
+   ```sh
+   mkdir -p /mydata/es/data /mydata/es/config /mydata/es/plugins
+   chmod 777  /mydata/es/data
+   chmod 777  /mydata/es/config
+   chmod 777  /mydata/es/plugins
+   ```
+
+4. 部署单点es，创建es容器
+
+   ```sh
+   docker run -d \
+   --restart=always \
+   --name es \
+   --network es-net \
+   -p 9200:9200 \
+   -p 9300:9300 \
+   --privileged \
+   -v /mydata/es/data:/usr/share/elasticsearch/data \
+   -v /mydata/es/plugins:/usr/share/elasticsearch/plugins \
+   -e "discovery.type=single-node" \
+   -e "ES_JAVA_OPTS=-Xms512m -Xmx512m" \
+   elasticsearch:7.12.1
+   ```
+
+5. 验证是否安装成功
+
+   访问http://ip:9200。显示版本等信息说明启动成功
+
+
+#### 2. 安装Kibana
+
+1. 拉取镜像
+
+   ```sh
+   docker pull kibana:7.12.1
+   ```
+
+2. 创建容器
+
+   ```sh
+   docker run -d \
+   --restart=always \
+   --name kibana \
+   --network es-net \
+   -p 5601:5601 \
+   -e ELASTICSEARCH_HOSTS=http://es:9200 \
+   kibana:7.12.1
+   ```
+
+3. 测试是否安装成功
+
+   访问http://ip:5601
+
+#### 3. 安装ik分词器
+
+1. 进入es容器
+
+   ```sh
+   docker exec -it es /bin/bash
+   ```
+
+2. 在线安装 
+
+   ___注意：安装IK分词器的版本，必须和Elasticsearch的版本一致___。安装其他版本的将版本号修改即可
+
+   ```sh
+   ./bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.12.1/elasticsearch-analysis-ik-7.12.zip
+   ```
+
+   
+
 ## 四、远程连接
 
 ### 使用idea远程连接docker
@@ -501,7 +590,7 @@ ubuntu或centos都可用以下方式配置镜像加速器
 
 ## 六、docker高级安装
 
-### 1. mysql主从复制
+###  mysql主从复制
 
 1. 新建主服务器容器实例3307
 
