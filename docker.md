@@ -1,4 +1,4 @@
-# docker（更新中……）
+# docker
 
 [docker官网](http://www.docker.com)
 
@@ -12,34 +12,71 @@ ___(使用root权限，如果不是，每个命令前加sudo)___
 
 ### 1. ubuntu安装docker
 
-1. 卸载ubuntu原装docker：`apt-get remove docker docker-engine docker.io containerd runc`
+1. 卸载ubuntu原装docker
+
+   ```sh
+   apt-get remove docker docker-engine docker.io containerd runc
+   ```
 
 2. 更新软件包和版本数据：
 
-   * `apt-get update`
-   * `apt upgrade`
+   ```sh
+   # 1
+   apt-get update
+   # 2
+   apt upgrade
+   ```
 
-3. 安装docker所需的依赖文件：`apt-get install ca-certificates curl gnupg lsb-release`
+3. 安装docker所需的依赖文件
+
+   ```sh
+   apt-get install ca-certificates curl gnupg lsb-release
+   ```
 
 4. 添加docker官方GPG密钥：
 
-   `curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -`
+   ```sh
+   curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
+   ```
 
 5. 添加docker国内镜像源（此处选用阿里云）：
 
-   `sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"`
+   ```sh
+   sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
+   ```
 
-6. 安装docker：`apt-get install docker-ce docker-ce-cli containerd.io`
+6. 安装docker
 
-7. docker 启动：`systemctl start docker`
+   ```sh
+   apt-get install docker-ce docker-ce-cli containerd.io
+   ```
+
+7. docker 启动
+
+   ```sh
+   systemctl start docker
+   ```
 
 8. 安装工具：
 
-   `apt-get -y install apt-transport-https ca-certificates curl software-properties-common`
+   ```sh
+   # 为apt添加了https 支持
+   apt-get -y install apt-transport-https ca-certificates curl software-properties-common
+   ```
 
-9. 重启：`service docker restart`
+9. 重启
 
-10. 设置开机自启：`systemctl enable docker.service`
+   ```sh
+   service docker restart
+   # 或
+   systemctl restart docker
+   ```
+
+10. 设置开机自启
+
+    ```sh
+    systemctl enable docker.service
+    ```
 
 ### 2. centos安装docker
 
@@ -80,7 +117,7 @@ ___(使用root权限，如果不是，每个命令前加sudo)___
 
 ubuntu或centos都可用以下方式配置镜像加速器
 
-1. 登录阿里云官网，搜索容器镜像服务
+1. 登录[阿里云官网](https://www.aliyun.com/)，搜索容器镜像服务
 
    ![image-20230928103643167](https://cdn.jsdelivr.net/gh/fosss666/notebook/img/202309281036686.png)
 
@@ -409,7 +446,7 @@ ubuntu或centos都可用以下方式配置镜像加速器
    ___注意：安装IK分词器的版本，必须和Elasticsearch的版本一致___。安装其他版本的将版本号修改即可
 
    ```sh
-   ./bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.12.1/elasticsearch-analysis-ik-7.12.zip
+   ./bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.12.1/elasticsearch-analysis-ik-7.12.1.zip
    ```
 
    
