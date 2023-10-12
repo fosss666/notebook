@@ -134,7 +134,32 @@ ubuntu或centos都可用以下方式配置镜像加速器
    sudo systemctl restart docker
    ```
 
-   
+
+### 4. 补充：安装配置docker compose
+
+1. 下载
+
+   ```sh
+   curl -L https://github.com/docker/compose/releases/download/1.27.4/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+   ```
+
+2. 配置权限
+
+   ```sh
+   chmod +x /usr/local/bin/docker-compose
+   ```
+
+3. 查看版本
+
+   ```sh
+   docker-compose version
+   ```
+
+   卸载
+
+   ```sh
+   rm /usr/local/bin/docker-compose
+   ```
 
 ## 二、docker基本命令
 
