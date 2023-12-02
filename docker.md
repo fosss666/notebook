@@ -300,7 +300,7 @@ ubuntu或centos都可用以下方式配置镜像加速器
    docker pull alqutami/rtmp-hls
    ```
 
-2. 运行
+2. 运行，这遍运行只是为了得到配置文件
 
    ```shell
    docker run -p 1935:1935 -p 8080:8080 --name=nginx_rtmp -d alqutami/rtmp-hls
@@ -311,6 +311,8 @@ ubuntu或centos都可用以下方式配置镜像加速器
    ```shell
    docker cp 容器id:/etc.nginx /mydata
    ```
+
+   然后将上个容器删掉 `docker rm nginx_rtmp`
 
 4. 将mydata下的nginx文件修改名称为nginx_rtmp：直接在图形界面上编辑
 
